@@ -8,7 +8,7 @@ class App extends Component {
   };
 
   handleChatConnection = () => {
-    this.setState((s) => ({ connectChat: !s.connectChat }));
+    this.setState((prevState) => ({ connectChat: !prevState.connectChat }));
   };
 
   render() {
