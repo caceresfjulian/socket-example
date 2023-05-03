@@ -15,8 +15,6 @@ To run this project, you'll need to install Node.js and NPM. Once you have these
 ### Directory Structure
 This project is organized into two main directories:
 
-- socket-service
-This directory contains the server code for the application. The server is built using Node.js and Socket.io, and is responsible for broadcasting messages to all connected clients.
+- socket-service: This directory contains the server code for the application. The server is built using Node.js and Socket.io, and is responsible for broadcasting messages to all connected clients.
 
-- socket-client
-This directory contains the React app for the application. The app uses Socket.io to connect to the server and receive real-time updates.
+- socket-client: This directory contains the React app for the application. The app uses Socket.io to connect to the server and receive real-time updates.
