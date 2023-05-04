@@ -16,26 +16,18 @@ export default class SocketClient extends Component {
     autoScroll: true,
   };
 
-  limitMessages(limit, list) {
-    const result = [];
-    for (let i = list.length - 1; i >= 0; i--) {
-      if (result.length === limit - 1) {
-        break;
-      }
-      result.push(list[i]);
-    }
-    return result.reverse();
-  }
-
   componentDidMount() {
     this.socket.on("message", (data) => {
-      this.setState((prevState) => ({
-        ...prevState,
-        messages: [
-          ...this.limitMessages(25, prevState.messages),
-          { content: data, id: nanoid() },
-        ],
-      }));
+      this.setState((prevState) => {
+        const updatedMessages = [...prevState.messages];
+        if (updatedMessages.length === 15) {
+          updatedMessages.splice(0, 1);
+        }
+        return {
+          ...prevState,
+          messages: [...updatedMessages, { content: data, id: nanoid() }],
+        };
+      });
     });
   }
 
