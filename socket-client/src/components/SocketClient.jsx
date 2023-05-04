@@ -1,43 +1,21 @@
-import { nanoid } from "nanoid";
 import { Component, createRef } from "react";
-import { io } from "socket.io-client";
+import MessageQueue from "../utils/MessageQueue";
 
 export default class SocketClient extends Component {
   constructor(props) {
     super(props);
     this.listRef = createRef();
-    this.socket = io("http://localhost:3000", {
-      transports: ["websocket"],
-    });
   }
 
   state = {
+    queue: new MessageQueue({
+      size: 20,
+      interval: 0.5,
+      updateState: this.setState.bind(this),
+    }),
     messages: [],
     autoScroll: true,
   };
-
-  limitMessages(limit, list) {
-    const result = [];
-    for (let i = list.length - 1; i >= 0; i--) {
-      if (result.length === limit - 1) {
-        break;
-      }
-      result.push(list[i]);
-    }
-    return result.reverse();
-  }
-
-  componentDidMount() {
-    this.socket.on("message", (data) => {
-      this.setState((prevState) => ({
-        ...prevState,
-        messages: [
-          ...this.limitMessages(25, prevState.messages),
-          { content: data, id: nanoid() },
-        ],
-      }));
-    });
-  }
 
   componentDidUpdate() {
     if (this.state.autoScroll) {
@@ -52,11 +30,11 @@ export default class SocketClient extends Component {
   }
 
   componentWillUnmount() {
-    this.socket.disconnect();
+    this.state.queue.stopQueue();
   }
 
   resetMessageList = () => {
-    this.setState((prevState) => ({ ...prevState, messages: [] }));
+    this.state.queue.resetMessages();
   };
 
   toggleAutoScroll = () => {
@@ -78,7 +56,7 @@ export default class SocketClient extends Component {
             }}
             onClick={this.toggleAutoScroll}
           >{`Turn auto scroll ${this.state.autoScroll ? "OFF" : "ON"}`}</button>
-          <h3>{this.state.messages.length} messages</h3>
+          <h3>{this.state.queue.getMessagesCount()} messages</h3>
           <button onClick={this.resetMessageList}>Empty messages</button>
         </div>
         <ul
@@ -93,20 +71,23 @@ export default class SocketClient extends Component {
           }}
           ref={this.listRef}
         >
-          {this.state.messages.map((msg) => (
-            <li
-              key={msg.id}
-              style={{
-                listStyle: "none",
-                backgroundColor: "white",
-                padding: 5,
-                border: "1px solid black",
-                marginBottom: 5,
-              }}
-            >
-              {msg.content}
-            </li>
-          ))}
+          {this.state.messages.map(
+            (msg) =>
+              msg && (
+                <li
+                  key={msg.id}
+                  style={{
+                    listStyle: "none",
+                    backgroundColor: "white",
+                    padding: 5,
+                    border: "1px solid black",
+                    marginBottom: 5,
+                  }}
+                >
+                  {msg.content}
+                </li>
+              )
+          )}
         </ul>
       </>
     );

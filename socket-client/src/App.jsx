@@ -14,7 +14,7 @@ class App extends Component {
   render() {
     return (
       <>
-        <h1>GoIT Socket</h1>
+        <h1>GoIT Queue</h1>
         {this.state.connectChat ? (
           <>
             <SocketClient />
