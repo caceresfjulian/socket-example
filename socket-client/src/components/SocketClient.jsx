@@ -13,7 +13,6 @@ export default class SocketClient extends Component {
       interval: 0.5,
       updateState: this.setState.bind(this),
     }),
-    messages: [],
     autoScroll: true,
   };
 
@@ -71,7 +70,7 @@ export default class SocketClient extends Component {
           }}
           ref={this.listRef}
         >
-          {this.state.messages.map(
+          {this.state.queue.getMessages().map(
             (msg) =>
               msg && (
                 <li

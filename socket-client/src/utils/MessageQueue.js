@@ -20,7 +20,7 @@ export default class MessageQueue {
         this.count += 1;
         this.updateState((prevState) => ({
           ...prevState,
-          messages: [...this.messages],
+          queue: { ...this },
         }));
         return;
       }
@@ -29,7 +29,7 @@ export default class MessageQueue {
       this.messages.push(newMessage);
       this.updateState((prevState) => ({
         ...prevState,
-        messages: [...this.messages],
+        queue: { ...this },
       }));
     }, this.interval * 1000);
 
@@ -46,7 +46,7 @@ export default class MessageQueue {
     this.count = 0;
     this.updateState((prevState) => ({
       ...prevState,
-      messages: [...this.messages],
+      queue: { ...this },
     }));
   };
 
